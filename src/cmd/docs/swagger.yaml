@@ -1,0 +1,343 @@
+basePath: /
+definitions:
+  gin.H:
+    additionalProperties: {}
+    type: object
+  github_com_pfenerty_ocidex-api_internal_registry-metadata.ImageRequestQuery:
+    properties:
+      architecture:
+        description: |-
+          Architecture field specifies the CPU architecture, for example
+          `amd64` or `ppc64le`.
+        type: string
+      os:
+        description: OS specifies the operating system, for example `linux` or `windows`.
+        type: string
+      os.features:
+        description: |-
+          OSFeatures is an optional field specifying an array of strings,
+          each listing a required OS feature (for example on Windows `win32k`).
+        items:
+          type: string
+        type: array
+      os.version:
+        description: |-
+          OSVersion is an optional field specifying the operating system
+          version, for example on Windows `10.0.14393.1066`.
+        type: string
+      reference:
+        type: string
+      variant:
+        description: |-
+          Variant is an optional field specifying a variant of the CPU, for
+          example `v7` to specify ARMv7 when architecture is `arm`.
+        type: string
+    required:
+    - reference
+    type: object
+  github_com_pfenerty_ocidex-api_internal_registry-metadata.ImageResponseData:
+    properties:
+      config:
+        $ref: '#/definitions/v1.Image'
+      manifest:
+        $ref: '#/definitions/v1.Manifest'
+    type: object
+  v1.Descriptor:
+    properties:
+      annotations:
+        additionalProperties:
+          type: string
+        description: Annotations contains arbitrary metadata relating to the targeted
+          content.
+        type: object
+      artifactType:
+        description: ArtifactType is the IANA media type of this artifact.
+        type: string
+      data:
+        description: |-
+          Data is an embedding of the targeted content. This is encoded as a base64
+          string when marshalled to JSON (automatically, by encoding/json). If
+          present, Data can be used directly to avoid fetching the targeted content.
+        items:
+          type: integer
+        type: array
+      digest:
+        description: Digest is the digest of the targeted content.
+        type: string
+      mediaType:
+        description: MediaType is the media type of the object this schema refers
+          to.
+        type: string
+      platform:
+        allOf:
+        - $ref: '#/definitions/v1.Platform'
+        description: |-
+          Platform describes the platform which the image in the manifest runs on.
+
+          This should only be used when referring to a manifest.
+      size:
+        description: Size specifies the size in bytes of the blob.
+        type: integer
+      urls:
+        description: URLs specifies a list of URLs from which this object MAY be downloaded
+        items:
+          type: string
+        type: array
+    type: object
+  v1.History:
+    properties:
+      author:
+        description: Author is the author of the build point.
+        type: string
+      comment:
+        description: Comment is a custom message set when creating the layer.
+        type: string
+      created:
+        description: Created is the combined date and time at which the layer was
+          created, formatted as defined by RFC 3339, section 5.6.
+        type: string
+      created_by:
+        description: CreatedBy is the command which created the layer.
+        type: string
+      empty_layer:
+        description: EmptyLayer is used to mark if the history item created a filesystem
+          diff.
+        type: boolean
+    type: object
+  v1.Image:
+    properties:
+      architecture:
+        description: |-
+          Architecture field specifies the CPU architecture, for example
+          `amd64` or `ppc64le`.
+        type: string
+      author:
+        description: Author defines the name and/or email address of the person or
+          entity which created and is responsible for maintaining the image.
+        type: string
+      config:
+        allOf:
+        - $ref: '#/definitions/v1.ImageConfig'
+        description: Config defines the execution parameters which should be used
+          as a base when running a container using the image.
+      created:
+        description: Created is the combined date and time at which the image was
+          created, formatted as defined by RFC 3339, section 5.6.
+        type: string
+      history:
+        description: History describes the history of each layer.
+        items:
+          $ref: '#/definitions/v1.History'
+        type: array
+      os:
+        description: OS specifies the operating system, for example `linux` or `windows`.
+        type: string
+      os.features:
+        description: |-
+          OSFeatures is an optional field specifying an array of strings,
+          each listing a required OS feature (for example on Windows `win32k`).
+        items:
+          type: string
+        type: array
+      os.version:
+        description: |-
+          OSVersion is an optional field specifying the operating system
+          version, for example on Windows `10.0.14393.1066`.
+        type: string
+      rootfs:
+        allOf:
+        - $ref: '#/definitions/v1.RootFS'
+        description: RootFS references the layer content addresses used by the image.
+      variant:
+        description: |-
+          Variant is an optional field specifying a variant of the CPU, for
+          example `v7` to specify ARMv7 when architecture is `arm`.
+        type: string
+    type: object
+  v1.ImageConfig:
+    properties:
+      ArgsEscaped:
+        description: |-
+          ArgsEscaped
+
+          Deprecated: This field is present only for legacy compatibility with
+          Docker and should not be used by new image builders.  It is used by Docker
+          for Windows images to indicate that the `Entrypoint` or `Cmd` or both,
+          contains only a single element array, that is a pre-escaped, and combined
+          into a single string `CommandLine`. If `true` the value in `Entrypoint` or
+          `Cmd` should be used as-is to avoid double escaping.
+          https://github.com/opencontainers/image-spec/pull/892
+        type: boolean
+      Cmd:
+        description: Cmd defines the default arguments to the entrypoint of the container.
+        items:
+          type: string
+        type: array
+      Entrypoint:
+        description: Entrypoint defines a list of arguments to use as the command
+          to execute when the container starts.
+        items:
+          type: string
+        type: array
+      Env:
+        description: Env is a list of environment variables to be used in a container.
+        items:
+          type: string
+        type: array
+      ExposedPorts:
+        additionalProperties:
+          type: object
+        description: ExposedPorts a set of ports to expose from a container running
+          this image.
+        type: object
+      Labels:
+        additionalProperties:
+          type: string
+        description: Labels contains arbitrary metadata for the container.
+        type: object
+      StopSignal:
+        description: StopSignal contains the system call signal that will be sent
+          to the container to exit.
+        type: string
+      User:
+        description: User defines the username or UID which the process in the container
+          should run as.
+        type: string
+      Volumes:
+        additionalProperties:
+          type: object
+        description: Volumes is a set of directories describing where the process
+          is likely write data specific to a container instance.
+        type: object
+      WorkingDir:
+        description: WorkingDir sets the current working directory of the entrypoint
+          process in the container.
+        type: string
+    type: object
+  v1.Manifest:
+    properties:
+      annotations:
+        additionalProperties:
+          type: string
+        description: Annotations contains arbitrary metadata for the image manifest.
+        type: object
+      artifactType:
+        description: ArtifactType specifies the IANA media type of artifact when the
+          manifest is used for an artifact.
+        type: string
+      config:
+        allOf:
+        - $ref: '#/definitions/v1.Descriptor'
+        description: |-
+          Config references a configuration object for a container, by digest.
+          The referenced configuration object is a JSON blob that the runtime uses to set up the container.
+      layers:
+        description: Layers is an indexed list of layers referenced by the manifest.
+        items:
+          $ref: '#/definitions/v1.Descriptor'
+        type: array
+      mediaType:
+        description: MediaType specifies the type of this document data structure
+          e.g. `application/vnd.oci.image.manifest.v1+json`
+        type: string
+      schemaVersion:
+        description: SchemaVersion is the image manifest schema that this image follows
+        type: integer
+      subject:
+        allOf:
+        - $ref: '#/definitions/v1.Descriptor'
+        description: Subject is an optional link from the image manifest to another
+          manifest forming an association between the image manifest and the other
+          manifest.
+    type: object
+  v1.Platform:
+    properties:
+      architecture:
+        description: |-
+          Architecture field specifies the CPU architecture, for example
+          `amd64` or `ppc64le`.
+        type: string
+      os:
+        description: OS specifies the operating system, for example `linux` or `windows`.
+        type: string
+      os.features:
+        description: |-
+          OSFeatures is an optional field specifying an array of strings,
+          each listing a required OS feature (for example on Windows `win32k`).
+        items:
+          type: string
+        type: array
+      os.version:
+        description: |-
+          OSVersion is an optional field specifying the operating system
+          version, for example on Windows `10.0.14393.1066`.
+        type: string
+      variant:
+        description: |-
+          Variant is an optional field specifying a variant of the CPU, for
+          example `v7` to specify ARMv7 when architecture is `arm`.
+        type: string
+    type: object
+  v1.RootFS:
+    properties:
+      diff_ids:
+        description: DiffIDs is an array of layer content hashes (DiffIDs), in order
+          from bottom-most to top-most.
+        items:
+          type: string
+        type: array
+      type:
+        description: Type is the type of the rootfs.
+        type: string
+    type: object
+info:
+  contact:
+    email: patrick@fenerty.me
+    name: Patrick Fenerty
+  description: OCI metadata API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: OCIDex API
+  version: "0.1"
+paths:
+  /image:
+    post:
+      consumes:
+      - application/json
+      description: Get image manifest and config
+      parameters:
+      - description: Image Request Query
+        in: body
+        name: ImageRequestQuery
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_pfenerty_ocidex-api_internal_registry-metadata.ImageRequestQuery'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_pfenerty_ocidex-api_internal_registry-metadata.ImageResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get image metadata for an image reference
+      tags:
+      - images
+  /ping:
+    get:
+      description: Ping the server to check if its running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Ping the server
+      tags:
+      - ping
+swagger: "2.0"

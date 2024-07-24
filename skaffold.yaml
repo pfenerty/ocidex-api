@@ -1,0 +1,40 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+build:
+  platforms:
+    - "linux/amd64"
+#    - "linux/arm64"
+  artifacts:
+    - image: ocidex.pfenerty.com/ocidex/api
+      ko:
+        dir: ./src
+        main: ./cmd
+        dependencies:
+          paths:
+            - "src/cmd/**/*.go"
+            - "src/go.*"
+        fromImage: cgr.dev/chainguard/glibc-dynamic:latest
+portForward:
+  - resourceType: service
+    resourceName: ocidex-api
+    namespace: default
+    port: 80
+    localPort: 8080
+manifests:
+  helm:
+    releases:
+      - name: ocidex-api
+        chartPath: helm
+        namespace: skaffold-ocidex
+        createNamespace: true
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_ocidex_pfenerty_com_ocidex_api}}"
+          image.tag: "{{.IMAGE_TAG_ocidex_pfenerty_com_ocidex_api}}"
+profiles:
+  - name: sync
+    activation:
+      - command: dev
+    patches:
+      - op: add
+        path: /build/artifacts/0/ko/fromImage
+        value: cgr.dev/chainguard/glibc-dynamic:latest-dev
