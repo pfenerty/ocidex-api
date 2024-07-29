@@ -1,12 +1,15 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/pfenerty/ocidex-api/cmd/docs"
 	"github.com/pfenerty/ocidex-api/internal/api-handlers"
 	"github.com/pfenerty/ocidex-api/middleware"
 	"github.com/sirupsen/logrus"
+	"net/http"
 	"os"
+	"strings"
 )
 
 // @title OCIDex API
@@ -26,16 +29,25 @@ func main() {
 	logger.SetFormatter(&logrus.TextFormatter{})
 	logger.SetLevel(logrus.DebugLevel)
 
+	allowedOrigins := strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
+	if len(allowedOrigins) == 0 {
+		allowedOrigins = append(allowedOrigins, "*")
+		logger.Warn("No allowed origin set. Using default.")
+	}
+
+	ginMode := os.Getenv("GIN_MODE")
+	gin.SetMode(ginMode)
+
 	r := gin.Default()
 	r.Use(middleware.LogrusLogger(logger))
-	err := r.SetTrustedProxies([]string{"127.0.0.1"})
-	if err != nil {
-		logger.Fatal(err)
-		return
-	}
+	r.Use(cors.New(cors.Config{
+		AllowMethods: []string{http.MethodGet, http.MethodPost},
+		AllowOrigins: allowedOrigins,
+		AllowHeaders: []string{"Origin", "Content-Type"},
+	}))
 	api_handlers.RegisterRoutes(r, logger)
 
-	err = r.Run()
+	err := r.Run()
 	if err != nil {
 		logger.Fatal(err)
 		panic(err)
