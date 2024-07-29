@@ -3,6 +3,7 @@ package registry_metadata
 import (
 	"context"
 	"encoding/json"
+	"github.com/google/go-containerregistry/pkg/v1/types"
 	ociSpec "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/sirupsen/logrus"
 	orasContent "oras.land/oras-go/v2/content"
@@ -81,7 +82,7 @@ func getFullImageManifest(ctx context.Context, logEntry *logrus.Entry,
 		return ociSpec.Manifest{}, err
 	}
 
-	if descriptor.MediaType == ociSpec.MediaTypeImageIndex {
+	if descriptor.MediaType == ociSpec.MediaTypeImageIndex || descriptor.MediaType == string(types.DockerManifestList) {
 		var index ociSpec.Index
 		if err := json.Unmarshal(imageContent, &index); err != nil {
 			logEntry.WithFields(logrus.Fields{
