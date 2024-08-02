@@ -10,6 +10,10 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+env: {}
+#  ALLOWED_ORIGINS: https://ocidex.com
+#  GIN_MODE: release
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

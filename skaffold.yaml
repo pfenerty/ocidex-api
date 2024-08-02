@@ -30,6 +30,10 @@ manifests:
         setValueTemplates:
           image.repository: "{{.IMAGE_REPO_ocidex_pfenerty_com_ocidex_api}}"
           image.tag: "{{.IMAGE_TAG_ocidex_pfenerty_com_ocidex_api}}"
+        setValues:
+          env:
+            ALLOWED_ORIGINS: http://localhost:4200
+            GIN_MODE: debug
 profiles:
   - name: sync
     activation:
