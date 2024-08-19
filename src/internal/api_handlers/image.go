@@ -2,7 +2,7 @@ package api_handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	registryMetadata "github.com/pfenerty/ocidex-api/internal/registry-metadata"
+	registryMetadata "github.com/pfenerty/ocidex-api/internal/registry_metadata"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )

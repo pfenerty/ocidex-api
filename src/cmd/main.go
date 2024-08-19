@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/pfenerty/ocidex-api/cmd/docs"
-	"github.com/pfenerty/ocidex-api/internal/api-handlers"
+	"github.com/pfenerty/ocidex-api/internal/api_handlers"
 	"github.com/pfenerty/ocidex-api/middleware"
 	"github.com/sirupsen/logrus"
 	"net/http"

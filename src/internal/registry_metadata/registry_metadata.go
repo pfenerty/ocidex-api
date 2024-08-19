@@ -114,7 +114,7 @@ func getFullImageManifest(ctx context.Context, logEntry *logrus.Entry,
 }
 
 func getConfig(ctx context.Context, logEntry *logrus.Entry,
-	repository *orasRemote.Repository, descriptor ociSpec.Descriptor) (ociSpec.Image, error) {
+	repository orasContent.Fetcher, descriptor ociSpec.Descriptor) (ociSpec.Image, error) {
 
 	configContent, err := orasContent.FetchAll(ctx, repository, descriptor)
 	if err != nil {
