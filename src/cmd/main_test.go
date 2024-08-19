@@ -9,5 +9,6 @@ import (
 
 func TestLoggerInitialization(t *testing.T) {
 	logger := logrus.New()
+
 	assert.NotNil(t, logger, "Logger should not be nil")
 }
